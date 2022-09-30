@@ -9,7 +9,7 @@ object Game {
   object Weapon {
     val Rock: String = "0" // 🪨
     val Paper: String = "1" // 📄
-    val Scissor: String = "2" // ✂️
+    val Scissors: String = "2" // ✂️
   }
 
   // TODO this should be an enum (or Scala equivalent of TS Enum)
