@@ -7,9 +7,9 @@ object Game {
 
   // TODO this should be an enum (or Scala equivalent of TS Enum)
   object Weapon {
-    val Rock: Int = 1 // 🪨
-    val Paper: Int = 2 // 📄
-    val Scissor: Int = 3 // ✂️
+    val Rock: Int = 0 // 🪨
+    val Paper: Int = 1 // 📄
+    val Scissor: Int = 2 // ✂️
     val Invalid: Int = -1 // Something bad happened
   }
 
