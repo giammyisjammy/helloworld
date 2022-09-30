@@ -1,10 +1,6 @@
 package rps
 
-object Hello extends Greeting with App {
-  println(greeting)
+object Main extends App {
+  println("Wanna play? 🎲")
   Game.play()
-}
-
-trait Greeting {
-  lazy val greeting: String = "Wanna play? 🐷"
 }
