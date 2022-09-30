@@ -1,6 +1,7 @@
 package rps
 
 import scala.io.StdIn.readLine
+import scala.util.Random
 
 object Game {
 
@@ -28,18 +29,16 @@ object Game {
     """)
     val rawUserInput = readLine()
     val userWeapon = parseWeapon(rawUserInput)
-    val cpuWeapon = Weapon.Rock // TODO how to random number?
+    val cpuWeapon = parseWeapon(generateComputerMove())
 
     if (userWeapon != Weapon.Invalid) {
-      val weaponText = "🪨 Rock" // TODO this text needs fix
-      println(s"Your opponent chose ${cpuWeapon} - ${weaponText}")
+      println(s"Your opponent chose ${cpuWeapon}")
+
+      val result = checkWinner(userWeapon, cpuWeapon)
+      announceWinner(result)
     } else {
       println("Not a valid weapon, Spock!")
     }
-
-    val result = checkWinner(userWeapon, cpuWeapon)
-
-    announceWinner(result)
   }
 
   def announceWinner(result: Int): Unit = {
@@ -67,13 +66,9 @@ object Game {
       || (user == Weapon.Rock && cpu == Weapon.Paper)
     ) {
       Winner.Cpu
-    } else if (
-      (user == Weapon.Scissor && cpu == Weapon.Paper)
-      || (user == Weapon.Rock && cpu == Weapon.Scissor)
-      || (user == Weapon.Paper && cpu == Weapon.Rock)
-    ) {
+    } else {
       Winner.User
-    } else Winner.Invalid
+    }
   }
 
   /** TODO should throw if input is not a valid weapon
@@ -92,4 +87,9 @@ object Game {
       Weapon.Invalid // TODO throw?
     }
   }
+
+  private val r = scala.util.Random
+
+  private def generateComputerMove(): String =
+    r.nextInt(3).toString
 }
