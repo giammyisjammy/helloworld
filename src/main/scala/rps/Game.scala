@@ -80,7 +80,7 @@ object Game {
       computerMove: Option[Move]
   ): GameResult = {
     (userMove.orNull, computerMove.orNull) match {
-      case (x, y) if (x == y)          => GameResult.Draw // BUG? Both user and cpu use invalid weapons = draw
+      case (x, y) if x == y            => GameResult.Draw // BUG? Both user and cpu use invalid weapons = draw
       case (Move.Rock, Move.Scissors)  => GameResult.UserWins
       case (Move.Paper, Move.Rock)     => GameResult.UserWins
       case (Move.Scissors, Move.Paper) => GameResult.UserWins
