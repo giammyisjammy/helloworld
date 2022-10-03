@@ -10,21 +10,24 @@ object Game {
     case object Rock extends Move // 🪨
     case object Paper extends Move // 📄
     case object Scissors extends Move // ✂️
+    val moves = List(Rock, Paper, Scissors)
 
+    // Idea is similar to a fp-ts Encoder, I dunno if it's the right place here
     def decode(input: String): Option[Move] = {
       input match {
         case "0" => Some(Move.Rock)
         case "1" => Some(Move.Paper)
         case "2" => Some(Move.Scissors)
-        case _   => None // Is this right??
+        case _   => None
       }
     }
-    def encode(input: Move): String = {
+    // Idea is similar to a fp-ts Decoder, I dunno if it's the right place here
+    def encode(input: Move): String = { // TODO should it also accept an Option[Move]?
       input match {
         case Move.Rock     => "0"
         case Move.Paper    => "1"
         case Move.Scissors => "2"
-        case _             => "Invalid weapon" // Is this right??
+        case _ => "Invalid weapon" // Is this right?? Will it be ever used?
       }
     }
   }
@@ -37,11 +40,12 @@ object Game {
   }
 
   def play(): Unit = {
-    println(s"""Choose your weapon:
-    ${Move.encode(Move.Rock)} - ${matchMove(Some(Move.Rock))}
-    ${Move.encode(Move.Paper)} - ${matchMove(Some(Move.Paper))}
-    ${Move.encode(Move.Scissors)} - ${matchMove(Some(Move.Scissors))}
-    """)
+    val menu = Move.moves
+      .map(m => s"${Move.encode(m)} - ${matchMove(Some(m))}")
+      .reduce((acc, curr) => s"${acc}\n${curr}")
+    println("Choose your weapon:")
+    println(menu)
+
     val rawUserInput = readLine()
     val userMove = Move.decode(rawUserInput)
     val cpuMove = generateComputerMove()
@@ -51,7 +55,7 @@ object Game {
     println(
       s"You chose: ${matchMove(userMove)} | your opponent chose: ${matchMove(cpuMove)}"
     )
-    println(announceWinner(result))
+    println(announceResult(result))
   }
 
   def matchMove(move: Option[Move]): String = {
@@ -63,7 +67,7 @@ object Game {
     }
   }
 
-  def announceWinner(result: GameResult): String = {
+  def announceResult(result: GameResult): String = {
     result match {
       case GameResult.Draw     => "It's a draw ✍️"
       case GameResult.UserWins => "You win 🎉"
@@ -75,7 +79,7 @@ object Game {
       userMove: Option[Move],
       computerMove: Option[Move]
   ): GameResult = {
-    (userMove.get, computerMove.get) match { // Is this right?? Using .get
+    (userMove.orNull, computerMove.orNull) match {
       case (x, y) if (x == y)          => GameResult.Draw
       case (Move.Rock, Move.Scissors)  => GameResult.UserWins
       case (Move.Paper, Move.Rock)     => GameResult.UserWins
