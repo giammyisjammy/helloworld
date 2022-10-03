@@ -9,7 +9,7 @@ object Game {
   def play(): Unit = {
     val menu = Move.moves
       .map(m => s"${Move.encode(m)} - ${matchMove(Some(m))}")
-      .reduce((acc, curr) => s"${acc}\n${curr}")
+      .mkString("\n")
     println("Choose your weapon:")
     println(menu)
 
