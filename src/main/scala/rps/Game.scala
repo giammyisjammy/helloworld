@@ -21,9 +21,9 @@ object Game {
 
   def play(): Unit = {
     println(s"""Choose your weapon:
-    ${Weapon.Rock} - 🪨 Rock
-    ${Weapon.Paper} - 📄 Paper
-    ${Weapon.Scissors} - ✂️ Scissors
+    ${Weapon.Rock} - ${matchWeapon(Weapon.Rock)}
+    ${Weapon.Paper} - ${matchWeapon(Weapon.Paper)}
+    ${Weapon.Scissors} - ${matchWeapon(Weapon.Scissors)}
     """)
     val rawUserInput = readLine()
     val userWeapon = rawUserInput
@@ -31,28 +31,35 @@ object Game {
 
     val result = checkWinner(userWeapon, cpuWeapon)
 
-    println(s"You chose: ${userWeapon} | your opponent chose: ${cpuWeapon}")
+    println(s"You chose: ${matchWeapon(userWeapon)} | your opponent chose: ${matchWeapon(cpuWeapon)}")
     println(announceWinner(result))
   }
 
-  def announceWinner(result: String): String = {
-    if (result == Winner.Draw) "It's a draw ✍️"
-    else if (result == Winner.User) s"You win 🎉"
-    else "You lose 🤷"
+  def matchWeapon(weapon: String): String = {
+    weapon match {
+      case Weapon.Rock     => "🪨 Rock"
+      case Weapon.Paper    => "📄 Paper"
+      case Weapon.Scissors => "✂️ Scissors"
+      case _               => "💩 An invalid weapon"
+    }
   }
 
-  def checkWinner(user: String, cpu: String): String = {
-    if (user == cpu) {
-      Winner.Draw
-    } else if (
-      (user == Weapon.Rock && cpu == Weapon.Scissors)
-      || (user == Weapon.Paper && cpu == Weapon.Rock)
-      || (user == Weapon.Scissors && cpu == Weapon.Paper)
-    ) {
-      Winner.User
-    } else {
-      // also covers the case for an invalid weapon (e.g. user inputs "4")
-      Winner.Cpu
+  def announceWinner(result: String): String = {
+    result match {
+      case Winner.Draw => "It's a draw ✍️"
+      case Winner.User => "You win 🎉"
+      case _           => "You lose 🤷"
+    }
+  }
+
+  def checkWinner(userMove: String, computerMove: String): String = {
+    (userMove, computerMove) match {
+      case (x, y) if x == y              => Winner.Draw
+      case (Weapon.Rock, Weapon.Scissors)  => Winner.User
+      case (Weapon.Paper, Weapon.Rock)     => Winner.User
+      case (Weapon.Scissors, Weapon.Paper) => Winner.User
+      case _                               => Winner.Cpu
+      // default case also handles an invalid weapon (e.g. user inputs "4")
     }
   }
 
