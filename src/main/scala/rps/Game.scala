@@ -45,17 +45,11 @@ object Game {
 
   def checkWinner(userMove: String, computerMove: String): String = {
     (userMove, computerMove) match {
-      case (x, y) if (x == y) => Winner.Draw
-
-      case (x, y) if (x == Weapon.Rock && y == Weapon.Scissors) =>
-        Winner.User
-      case (x, y) if (x == Weapon.Paper && y == Weapon.Rock) =>
-        Winner.User
-      case (x, y) if (x == Weapon.Scissors && y == Weapon.Paper) =>
-        Winner.User
-
-      // also covers the case for an invalid weapon (e.g. user inputs "4")
-      case _ => Winner.Cpu
+      case (x, y) if (x == y)              => Winner.Draw
+      case (Weapon.Rock, Weapon.Scissors)  => Winner.User
+      case (Weapon.Paper, Weapon.Rock)     => Winner.User
+      case (Weapon.Scissors, Weapon.Paper) => Winner.User
+      case _                               => Winner.Cpu  // also covers the case for an invalid weapon (e.g. user inputs "4")
     }
   }
 
