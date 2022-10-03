@@ -23,7 +23,7 @@ object Game {
     println(s"""Choose your weapon:
     ${Weapon.Rock} - 🪨 Rock
     ${Weapon.Paper} - 📄 Paper
-    ${Weapon.Scissor} - ✂️ Scissor
+    ${Weapon.Scissors} - ✂️ Scissors
     """)
     val rawUserInput = readLine()
     val userWeapon = rawUserInput
@@ -45,9 +45,9 @@ object Game {
     if (user == cpu) {
       Winner.Draw
     } else if (
-      (user == Weapon.Rock && cpu == Weapon.Scissor)
+      (user == Weapon.Rock && cpu == Weapon.Scissors)
       || (user == Weapon.Paper && cpu == Weapon.Rock)
-      || (user == Weapon.Scissor && cpu == Weapon.Paper)
+      || (user == Weapon.Scissors && cpu == Weapon.Paper)
     ) {
       Winner.User
     } else {
