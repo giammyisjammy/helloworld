@@ -5,66 +5,88 @@ import scala.util.Random
 
 object Game {
 
-  // TODO this should be an enum (or Scala equivalent of TS Enum)
-  object Weapon {
-    val Rock: String = "0" // 🪨
-    val Paper: String = "1" // 📄
-    val Scissors: String = "2" // ✂️
+  sealed trait Move
+  object Move {
+    case object Rock extends Move // 🪨
+    case object Paper extends Move // 📄
+    case object Scissors extends Move // ✂️
+
+    def decode(input: String): Option[Move] = {
+      input match {
+        case "0" => Some(Move.Rock)
+        case "1" => Some(Move.Paper)
+        case "2" => Some(Move.Scissors)
+        case _   => None // Is this right??
+      }
+    }
+    def encode(input: Move): String = {
+      input match {
+        case Move.Rock     => "0"
+        case Move.Paper    => "1"
+        case Move.Scissors => "2"
+        case _             => "Invalid weapon" // Is this right??
+      }
+    }
   }
 
-  // TODO this should be an enum (or Scala equivalent of TS Enum)
-  object Winner {
-    val Draw: String = "0" // It's a draw
-    val User: String = "1" // User wins
-    val Cpu: String = "2" // Cpu wins
+  sealed trait GameResult
+  object GameResult {
+    case object Draw extends GameResult
+    case object UserWins extends GameResult
+    case object CpuWins extends GameResult
   }
 
   def play(): Unit = {
     println(s"""Choose your weapon:
-    ${Weapon.Rock} - ${matchWeapon(Weapon.Rock)}
-    ${Weapon.Paper} - ${matchWeapon(Weapon.Paper)}
-    ${Weapon.Scissors} - ${matchWeapon(Weapon.Scissors)}
+    ${Move.encode(Move.Rock)} - ${matchMove(Some(Move.Rock))}
+    ${Move.encode(Move.Paper)} - ${matchMove(Some(Move.Paper))}
+    ${Move.encode(Move.Scissors)} - ${matchMove(Some(Move.Scissors))}
     """)
     val rawUserInput = readLine()
-    val userWeapon = rawUserInput
-    val cpuWeapon = generateComputerMove()
+    val userMove = Move.decode(rawUserInput)
+    val cpuMove = generateComputerMove()
 
-    val result = checkWinner(userWeapon, cpuWeapon)
+    val result = checkWinner(userMove, cpuMove)
 
-    println(s"You chose: ${matchWeapon(userWeapon)} | your opponent chose: ${matchWeapon(cpuWeapon)}")
+    println(
+      s"You chose: ${matchMove(userMove)} | your opponent chose: ${matchMove(cpuMove)}"
+    )
     println(announceWinner(result))
   }
 
-  def matchWeapon(weapon: String): String = {
-    weapon match {
-      case Weapon.Rock     => "🪨 Rock"
-      case Weapon.Paper    => "📄 Paper"
-      case Weapon.Scissors => "✂️ Scissors"
-      case _               => "💩 An invalid weapon"
+  def matchMove(move: Option[Move]): String = {
+    move.orNull match {
+      case Move.Rock     => "🪨 Rock"
+      case Move.Paper    => "📄 Paper"
+      case Move.Scissors => "✂️ Scissors"
+      case _             => "💩 An invalid weapon"
     }
   }
 
-  def announceWinner(result: String): String = {
+  def announceWinner(result: GameResult): String = {
     result match {
-      case Winner.Draw => "It's a draw ✍️"
-      case Winner.User => "You win 🎉"
-      case _           => "You lose 🤷"
+      case GameResult.Draw     => "It's a draw ✍️"
+      case GameResult.UserWins => "You win 🎉"
+      case _                   => "You lose 🤷"
     }
   }
 
-  def checkWinner(userMove: String, computerMove: String): String = {
-    (userMove, computerMove) match {
-      case (x, y) if x == y              => Winner.Draw
-      case (Weapon.Rock, Weapon.Scissors)  => Winner.User
-      case (Weapon.Paper, Weapon.Rock)     => Winner.User
-      case (Weapon.Scissors, Weapon.Paper) => Winner.User
-      case _                               => Winner.Cpu
+  def checkWinner(
+      userMove: Option[Move],
+      computerMove: Option[Move]
+  ): GameResult = {
+    (userMove.get, computerMove.get) match { // Is this right?? Using .get
+      case (x, y) if (x == y)          => GameResult.Draw
+      case (Move.Rock, Move.Scissors)  => GameResult.UserWins
+      case (Move.Paper, Move.Rock)     => GameResult.UserWins
+      case (Move.Scissors, Move.Paper) => GameResult.UserWins
+      case _                           => GameResult.CpuWins
       // default case also handles an invalid weapon (e.g. user inputs "4")
     }
   }
 
   private val r = scala.util.Random
 
-  private def generateComputerMove(): String =
-    r.nextInt(3).toString
+  private def generateComputerMove(): Option[Move] =
+    Move.decode(r.nextInt(3).toString)
 }
