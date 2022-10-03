@@ -36,23 +36,26 @@ object Game {
   }
 
   def announceWinner(result: String): String = {
-    if (result == Winner.Draw) "It's a draw ✍️"
-    else if (result == Winner.User) s"You win 🎉"
-    else "You lose 🤷"
+    result match {
+      case Winner.Draw => "It's a draw ✍️"
+      case Winner.User => "You win 🎉"
+      case _           => "You lose 🤷"
+    }
   }
 
-  def checkWinner(user: String, cpu: String): String = {
-    if (user == cpu) {
-      Winner.Draw
-    } else if (
-      (user == Weapon.Rock && cpu == Weapon.Scissors)
-      || (user == Weapon.Paper && cpu == Weapon.Rock)
-      || (user == Weapon.Scissors && cpu == Weapon.Paper)
-    ) {
-      Winner.User
-    } else {
+  def checkWinner(userMove: String, computerMove: String): String = {
+    (userMove, computerMove) match {
+      case (x, y) if (x == y) => Winner.Draw
+
+      case (x, y) if (x == Weapon.Rock && y == Weapon.Scissors) =>
+        Winner.User
+      case (x, y) if (x == Weapon.Paper && y == Weapon.Rock) =>
+        Winner.User
+      case (x, y) if (x == Weapon.Scissors && y == Weapon.Paper) =>
+        Winner.User
+
       // also covers the case for an invalid weapon (e.g. user inputs "4")
-      Winner.Cpu
+      case _ => Winner.Cpu
     }
   }
 
