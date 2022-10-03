@@ -2,42 +2,9 @@ package rps
 
 import scala.io.StdIn.readLine
 import scala.util.Random
+import rps.models._
 
 object Game {
-
-  sealed trait Move
-  object Move {
-    case object Rock extends Move // 🪨
-    case object Paper extends Move // 📄
-    case object Scissors extends Move // ✂️
-    val moves = List(Rock, Paper, Scissors)
-
-    // Idea is similar to a fp-ts Encoder, I dunno if it's the right place here
-    def decode(input: String): Option[Move] = {
-      input match {
-        case "0" => Some(Move.Rock)
-        case "1" => Some(Move.Paper)
-        case "2" => Some(Move.Scissors)
-        case _   => None
-      }
-    }
-    // Idea is similar to a fp-ts Decoder, I dunno if it's the right place here
-    def encode(input: Move): String = { // TODO should it also accept an Option[Move]?
-      input match {
-        case Move.Rock     => "0"
-        case Move.Paper    => "1"
-        case Move.Scissors => "2"
-        case _ => "Invalid weapon" // Is this right?? Will it be ever used?
-      }
-    }
-  }
-
-  sealed trait GameResult
-  object GameResult {
-    case object Draw extends GameResult
-    case object UserWins extends GameResult
-    case object CpuWins extends GameResult
-  }
 
   def play(): Unit = {
     val menu = Move.moves
