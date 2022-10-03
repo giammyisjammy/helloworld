@@ -21,9 +21,9 @@ object Game {
 
   def play(): Unit = {
     println(s"""Choose your weapon:
-    ${Weapon.Rock} - 🪨 Rock
-    ${Weapon.Paper} - 📄 Paper
-    ${Weapon.Scissors} - ✂️ Scissors
+    ${Weapon.Rock} - ${matchWeapon(Weapon.Rock)}
+    ${Weapon.Paper} - ${matchWeapon(Weapon.Paper)}
+    ${Weapon.Scissors} - ${matchWeapon(Weapon.Scissors)}
     """)
     val rawUserInput = readLine()
     val userWeapon = rawUserInput
@@ -31,8 +31,17 @@ object Game {
 
     val result = checkWinner(userWeapon, cpuWeapon)
 
-    println(s"You chose: ${userWeapon} | your opponent chose: ${cpuWeapon}")
+    println(s"You chose: ${matchWeapon(userWeapon)} | your opponent chose: ${matchWeapon(cpuWeapon)}")
     println(announceWinner(result))
+  }
+
+  def matchWeapon(weapon: String): String = {
+    weapon match {
+      case Weapon.Rock     => "🪨 Rock"
+      case Weapon.Paper    => "📄 Paper"
+      case Weapon.Scissors => "✂️ Scissors"
+      case _               => "💩 An invalid weapon"
+    }
   }
 
   def announceWinner(result: String): String = {
@@ -49,7 +58,8 @@ object Game {
       case (Weapon.Rock, Weapon.Scissors)  => Winner.User
       case (Weapon.Paper, Weapon.Rock)     => Winner.User
       case (Weapon.Scissors, Weapon.Paper) => Winner.User
-      case _                               => Winner.Cpu  // also covers the case for an invalid weapon (e.g. user inputs "4")
+      case _                               => Winner.Cpu
+      // default case also handles an invalid weapon (e.g. user inputs "4")
     }
   }
 
