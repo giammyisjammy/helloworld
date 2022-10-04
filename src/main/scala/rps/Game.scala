@@ -9,19 +9,19 @@ import rps.models.GameResult.{CpuWins, Draw, DumbUser, UserWins}
 object Game {
 
   def play(): Unit = {
-    val menu = Move.moves
-      .map(m => s"${Move.encode(m)} - ${Move.print(m)}")
+    val menu = Move.values
+      .map(m => s"${MoveEncoder.encode(m)} - ${MoveEncoder.print(m)}")
       .mkString("\n")
     println("Choose your weapon:")
     println(menu)
 
     val rawUserInput = readLine()
-    val userMove = Move.decode(rawUserInput)
+    val userMove = MoveEncoder.decode(rawUserInput)
     val cpuMove = generateComputerMove()
 
     val printedUserMove =
-      userMove.map(Move.print).getOrElse("💩 An invalid weapon")
-    val printedCpuMove = Move.print(cpuMove)
+      userMove.map(MoveEncoder.print).getOrElse("💩 An invalid weapon")
+    val printedCpuMove = MoveEncoder.print(cpuMove)
     println(
       s"You chose: ${printedUserMove} | your opponent chose: ${printedCpuMove}"
     )
@@ -58,5 +58,5 @@ object Game {
   private val r = scala.util.Random
 
   private def generateComputerMove(): Move =
-    r.shuffle(Move.moves).head
+    r.shuffle(Move.values).head
 }
