@@ -55,6 +55,6 @@ object Game {
 
   private val r = scala.util.Random
 
-  private def generateComputerMove(): Option[Move] =
-    Move.decode(r.nextInt(3).toString)
+  private def generateComputerMove(): Move =
+    r.shuffle(Move.moves).head
 }
