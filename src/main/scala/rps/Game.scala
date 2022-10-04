@@ -3,12 +3,15 @@ package rps
 import scala.io.StdIn.readLine
 import scala.util.Random
 import rps.models._
+import rps.models.Move.Paper
+import rps.models.Move.Rock
+import rps.models.Move.Scissors
 
 object Game {
 
   def play(): Unit = {
     val menu = Move.moves
-      .map(m => s"${Move.encode(m)} - ${matchMove(Some(m))}")
+      .map(m => s"${Move.encode(m)} - ${Move.print(m)}")
       .mkString("\n")
     println("Choose your weapon:")
     println(menu)
@@ -17,21 +20,15 @@ object Game {
     val userMove = Move.decode(rawUserInput)
     val cpuMove = generateComputerMove()
 
-    val result = checkWinner(userMove, cpuMove)
-
+    val printedUserMove =
+      userMove.map(Move.print).getOrElse("💩 An invalid weapon")
+    val printedCpuMove = Move.print(cpuMove)
     println(
-      s"You chose: ${matchMove(userMove)} | your opponent chose: ${matchMove(cpuMove)}"
+      s"You chose: ${printedUserMove} | your opponent chose: ${printedCpuMove}"
     )
-    println(announceResult(result))
-  }
 
-  def matchMove(move: Option[Move]): String = {
-    move.orNull match {
-      case Move.Rock     => "🪨 Rock"
-      case Move.Paper    => "📄 Paper"
-      case Move.Scissors => "✂️ Scissors"
-      case _             => "💩 An invalid weapon"
-    }
+    val result = checkWinner(userMove, cpuMove)
+    println(announceResult(result))
   }
 
   def announceResult(result: GameResult): String = {
