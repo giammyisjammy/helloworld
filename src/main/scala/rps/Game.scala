@@ -35,21 +35,26 @@ object Game {
     result match {
       case GameResult.Draw     => "It's a draw ✍️"
       case GameResult.UserWins => "You win 🎉"
-      case _                   => "You lose 🤷"
+      case GameResult.CpuWins  => "You lose 🤷"
+      case GameResult.DumbUser =>
+        "You lose 🤷 (next time choose a valid weapon)"
     }
   }
 
   def checkWinner(
       userMove: Option[Move],
-      computerMove: Option[Move]
+      computerMove: Move
   ): GameResult = {
-    (userMove.orNull, computerMove.orNull) match {
-      case (x, y) if x == y            => GameResult.Draw // BUG? Both user and cpu use invalid weapons = draw
-      case (Move.Rock, Move.Scissors)  => GameResult.UserWins
-      case (Move.Paper, Move.Rock)     => GameResult.UserWins
-      case (Move.Scissors, Move.Paper) => GameResult.UserWins
-      case _                           => GameResult.CpuWins
-      // default case also handles an invalid weapon (e.g. user inputs "4")
+    (userMove, computerMove) match {
+      case (Some(x), y) =>
+        (x, y) match {
+          case (x, y) if x == y            => GameResult.Draw
+          case (Move.Rock, Move.Scissors)  => GameResult.UserWins
+          case (Move.Paper, Move.Rock)     => GameResult.UserWins
+          case (Move.Scissors, Move.Paper) => GameResult.UserWins
+          case _                           => GameResult.CpuWins
+        }
+      case (None, _) => GameResult.DumbUser
     }
   }
 
