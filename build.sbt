@@ -7,9 +7,9 @@ ThisBuild / organizationName := "buildo"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "RockPaperScissors",
+    name := "rps",
     libraryDependencies ++= List(
-      "org.scalameta" %% "munit" % "1.0.0" % Test
+      "org.scalameta" %% "munit" % "1.0.0-M6" % Test
     )
   )
 
