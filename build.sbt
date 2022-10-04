@@ -5,11 +5,19 @@ ThisBuild / version          := "0.1.0-SNAPSHOT"
 ThisBuild / organization     := "io.buildo"
 ThisBuild / organizationName := "buildo"
 
+val V = new {
+  val enumero = "1.4.2"
+}
+
+scalacOptions += "-Ymacro-annotations"
+
 lazy val root = (project in file("."))
   .settings(
     name := "rps",
     libraryDependencies ++= List(
-      "org.scalameta" %% "munit" % "1.0.0-M6" % Test
+      "org.scalameta" %% "munit" % "1.0.0-M6" % Test,
+      "io.buildo" %% "enumero" % V.enumero,
+      "io.buildo" %% "enumero-circe-support" % V.enumero
     )
   )
 
