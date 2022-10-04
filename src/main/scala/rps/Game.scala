@@ -3,9 +3,8 @@ package rps
 import scala.io.StdIn.readLine
 import scala.util.Random
 import rps.models._
-import rps.models.Move.Paper
-import rps.models.Move.Rock
-import rps.models.Move.Scissors
+import rps.models.Move.{Rock, Paper, Scissors}
+import rps.models.GameResult.{CpuWins, Draw, DumbUser, UserWins}
 
 object Game {
 
@@ -33,10 +32,10 @@ object Game {
 
   def announceResult(result: GameResult): String = {
     result match {
-      case GameResult.Draw     => "It's a draw ✍️"
-      case GameResult.UserWins => "You win 🎉"
-      case GameResult.CpuWins  => "You lose 🤷"
-      case GameResult.DumbUser =>
+      case Draw     => "It's a draw ✍️"
+      case UserWins => "You win 🎉"
+      case CpuWins  => "You lose 🤷"
+      case DumbUser =>
         "You lose 🤷 (next time choose a valid weapon)"
     }
   }
@@ -45,16 +44,14 @@ object Game {
       userMove: Option[Move],
       computerMove: Move
   ): GameResult = {
-    (userMove, computerMove) match {
-      case (Some(x), y) =>
-        (x, y) match {
-          case (x, y) if x == y            => GameResult.Draw
-          case (Move.Rock, Move.Scissors)  => GameResult.UserWins
-          case (Move.Paper, Move.Rock)     => GameResult.UserWins
-          case (Move.Scissors, Move.Paper) => GameResult.UserWins
-          case _                           => GameResult.CpuWins
+    userMove match {
+      case Some(x) =>
+        (x, computerMove) match {
+          case (Rock, Rock) | (Paper, Paper) | (Scissors, Scissors) => Draw
+          case (Rock, Scissors) | (Paper, Rock) | (Scissors, Paper) => UserWins
+          case (Rock, Paper) | (Paper, Scissors) | (Scissors, Rock) => CpuWins
         }
-      case (None, _) => GameResult.DumbUser
+      case None => DumbUser
     }
   }
 
