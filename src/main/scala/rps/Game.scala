@@ -5,23 +5,25 @@ import scala.util.Random
 import rps.models._
 import rps.models.Move.{Rock, Paper, Scissors}
 import rps.models.GameResult.{CpuWins, Draw, DumbUser, UserWins}
+import io.buildo.enumero.{CaseEnumIndex, CaseEnumSerialization}
 
 object Game {
-
   def play(): Unit = {
-    val menu = Move.moves
-      .map(m => s"${Move.encode(m)} - ${Move.print(m)}")
+    val menu = moves
+      .map(m =>
+        s"${CaseEnumSerialization[Move].caseToString(m)} - ${printMove(m)}"
+      )
       .mkString("\n")
     println("Choose your weapon:")
     println(menu)
 
     val rawUserInput = readLine()
-    val userMove = Move.decode(rawUserInput)
+    val userMove = CaseEnumIndex[Move].caseFromIndex(rawUserInput)
     val cpuMove = generateComputerMove()
 
     val printedUserMove =
-      userMove.map(Move.print).getOrElse("💩 An invalid weapon")
-    val printedCpuMove = Move.print(cpuMove)
+      userMove.map(printMove).getOrElse("💩 An invalid weapon")
+    val printedCpuMove = printMove(cpuMove)
     println(
       s"You chose: ${printedUserMove} | your opponent chose: ${printedCpuMove}"
     )
@@ -40,6 +42,14 @@ object Game {
     }
   }
 
+  def printMove(input: Move): String = {
+    input match {
+      case Move.Rock     => "🪨 Rock"
+      case Move.Paper    => "📄 Paper"
+      case Move.Scissors => "✂️ Scissors"
+    }
+  }
+
   def checkWinner(
       userMove: Option[Move],
       computerMove: Move
@@ -55,8 +65,10 @@ object Game {
     }
   }
 
+  private val moves = List(Rock, Paper, Scissors)
+
   private val r = scala.util.Random
 
   private def generateComputerMove(): Move =
-    r.shuffle(Move.moves).head
+    r.shuffle(moves).head
 }
