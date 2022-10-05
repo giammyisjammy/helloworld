@@ -10,7 +10,9 @@ import io.buildo.enumero.{CaseEnumIndex, CaseEnumSerialization}
 object Game {
   def play(): Unit = {
     val menu = moves
-      .map(m => s"${CaseEnumSerialization[Move].caseToString(m)} - ${printMove(m)}")
+      .map(m =>
+        s"${CaseEnumSerialization[Move].caseToString(m)} - ${printMove(m)}"
+      )
       .mkString("\n")
     println("Choose your weapon:")
     println(menu)
@@ -42,8 +44,8 @@ object Game {
 
   def printMove(input: Move): String = {
     input match {
-      case Move.Rock    => "🪨 Rock"
-      case Move.Paper     => "📄 Paper"
+      case Move.Rock     => "🪨 Rock"
+      case Move.Paper    => "📄 Paper"
       case Move.Scissors => "✂️ Scissors"
     }
   }
