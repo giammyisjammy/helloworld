@@ -9,14 +9,3 @@ import io.buildo.enumero.{CaseEnumIndex, CaseEnumSerialization}
   object Paper { "1" }
   object Scissors { "2" }
 }
-
-
-object MoveEncoder {
-  def print(input: Move): String = {
-    input match {
-      case Move.Rock    => "🪨 Rock"
-      case Move.Paper     => "📄 Paper"
-      case Move.Scissors => "✂️ Scissors"
-    }
-  }
-}

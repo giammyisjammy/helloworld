@@ -10,7 +10,7 @@ import io.buildo.enumero.{CaseEnumIndex, CaseEnumSerialization}
 object Game {
   def play(): Unit = {
     val menu = moves
-      .map(m => s"${CaseEnumSerialization[Move].caseToString(m)} - ${MoveEncoder.print(m)}")
+      .map(m => s"${CaseEnumSerialization[Move].caseToString(m)} - ${printMove(m)}")
       .mkString("\n")
     println("Choose your weapon:")
     println(menu)
@@ -20,8 +20,8 @@ object Game {
     val cpuMove = generateComputerMove()
 
     val printedUserMove =
-      userMove.map(MoveEncoder.print).getOrElse("💩 An invalid weapon")
-    val printedCpuMove = MoveEncoder.print(cpuMove)
+      userMove.map(printMove).getOrElse("💩 An invalid weapon")
+    val printedCpuMove = printMove(cpuMove)
     println(
       s"You chose: ${printedUserMove} | your opponent chose: ${printedCpuMove}"
     )
@@ -37,6 +37,14 @@ object Game {
       case CpuWins  => "You lose 🤷"
       case DumbUser =>
         "You lose 🤷 (next time choose a valid weapon)"
+    }
+  }
+
+  def printMove(input: Move): String = {
+    input match {
+      case Move.Rock    => "🪨 Rock"
+      case Move.Paper     => "📄 Paper"
+      case Move.Scissors => "✂️ Scissors"
     }
   }
 
