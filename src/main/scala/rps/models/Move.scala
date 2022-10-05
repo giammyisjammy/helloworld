@@ -1,31 +1,17 @@
 package rps.models
 
-import io.buildo.enumero.annotations.enum
+import io.buildo.enumero.annotations.indexedEnum
+import io.buildo.enumero.{CaseEnumIndex, CaseEnumSerialization}
 
-@enum trait Move {
-  object Rock
-  object Paper
-  object Scissors
+@indexedEnum trait Move {
+  type Index = String
+  object Rock { "0" }
+  object Paper { "1" }
+  object Scissors { "2" }
 }
 
+
 object MoveEncoder {
-  def decode(input: String): Option[Move] = {
-    input match {
-      case "0" => Some(Move.Rock)
-      case "1" => Some(Move.Paper)
-      case "2" => Some(Move.Scissors)
-      case _   => None
-    }
-  }
-
-  def encode(input: Move): String = {
-    input match {
-      case Move.Rock     => "0"
-      case Move.Paper    => "1"
-      case Move.Scissors => "2"
-    }
-  }
-
   def print(input: Move): String = {
     input match {
       case Move.Rock    => "🪨 Rock"
