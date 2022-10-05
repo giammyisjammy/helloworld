@@ -17,6 +17,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= List(
       "org.scalameta" %% "munit" % "1.0.0-M6" % Test,
       "io.buildo" %% "enumero" % V.enumero,
+      "io.buildo" %% "enumero-circe-support" % V.enumero,
       "org.flywaydb" % "flyway-core" % "7.5.4", // to run migrations from the code
       "org.postgresql" % "postgresql" % "42.2.5"
     )
