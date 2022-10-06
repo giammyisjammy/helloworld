@@ -9,9 +9,10 @@ CREATE TYPE move AS ENUM (
 );
 
 CREATE TYPE match_result AS ENUM (
-  'Win',
-  'Lose',
-  'Draw'
+  'UserWins',
+  'Draw',
+  'CpuWins',
+  'DumbUser'
 );
 
 CREATE CAST (varchar AS move) WITH INOUT AS ASSIGNMENT;
