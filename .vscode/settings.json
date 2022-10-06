@@ -1,5 +1,16 @@
 {
-    "files.watcherExclude": {
-        "**/target": true
-    }
+	"workbench.colorCustomizations": {
+        "activityBar.background": "#FFC63E",
+		"titleBar.inactiveForeground": "#000",
+		"titleBar.inactiveBackground": "#FFA6B0",
+		"titleBar.activeForeground": "#F7EBFC",
+		"titleBar.activeBackground": "#FF4E62",
+		"statusBar.background": "#A2E0DF",
+		"statusBar.foreground": "#000",
+		"statusBarItem.remoteBackground": "#45C1C0",
+		"statusBarItem.hoverBackground": "#45C1C0",
+	},
+	"files.watcherExclude": {
+		"**/target": true
+	}
 }
