@@ -1,18 +1,35 @@
 package rps
 
+import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.duration._
 import scala.io.StdIn.readLine
 import scala.util.Random
-import rps.models._
+import slick.jdbc.JdbcBackend.{Database, DatabaseDef}
+import rps.models.{Move, Play, GameResult}
 import rps.models.Move.{Rock, Paper, Scissors}
 import rps.models.GameResult.{CpuWins, Draw, DumbUser, UserWins}
 import io.buildo.enumero.{CaseEnumIndex, CaseEnumSerialization}
 
 object Game {
-  def play(): Unit = {
+
+  implicit val ec = ExecutionContext.global
+
+  val database = Database.forConfig("db")
+  val gameRepository = GameRepository.create(database)
+
+  def play(): Future[Unit] =
+    for { // TODO da capire meglio questa sintassi
+      _ <- printLastGameMessage
+      maybePlay = playRound()
+      _ <- maybePlay match {
+        case None       => Future.successful(())
+        case Some(play) => gameRepository.save(play)
+      }
+    } yield ()
+
+  def playRound(): Option[Play] = {
     val menu = moves
-      .map(m =>
-        s"${CaseEnumSerialization[Move].caseToString(m)} - ${printMove(m)}"
-      )
+      .map(m => s"${CaseEnumIndex[Move].caseToIndex(m)} - ${printMove(m)}")
       .mkString("\n")
     println("Choose your weapon:")
     println(menu)
@@ -30,6 +47,20 @@ object Game {
 
     val result = checkWinner(userMove, cpuMove)
     println(announceResult(result))
+
+    // type mismatch;(!) why???
+    //   found   : Option[rps.models.Move]
+    //   required: rps.models.Movebloop
+    // result match {
+    //   case CpuWins  => Some(Play(userMove, cpuMove, result))
+    //   case UserWins => Some(Play(userMove, cpuMove, result))
+    //   case Draw     => Some(Play(userMove, cpuMove, result))
+    //   case DumbUser => None
+    // }
+    userMove match {
+      case Some(value) => Some(Play(value, cpuMove, result))
+      case None        => None
+    }
   }
 
   def announceResult(result: GameResult): String = {
@@ -71,4 +102,27 @@ object Game {
 
   private def generateComputerMove(): Move =
     r.shuffle(moves).head
+
+  private def printLastGameMessage: Future[Unit] = {
+    gameRepository
+      .readLastMatch()
+      .map(x =>
+        x match {
+          case None =>
+            println("No previous results found")
+          case Some(lastPlay) =>
+            val result = lastPlay.result match {
+              case UserWins => "🎉 You won"
+              case Draw     => "✍️ Draw"
+              case CpuWins  => "🤷 You lost"
+              case DumbUser => "You chose a wrong weapon and you lost"
+            }
+            val userMove = printMove(lastPlay.userMove)
+            val computerMove = printMove(lastPlay.computerMove)
+            val message =
+              s"LAST ROUND: $result (Your move: $userMove. Computer move: $computerMove)"
+            println(message)
+        }
+      )
+  }
 }
